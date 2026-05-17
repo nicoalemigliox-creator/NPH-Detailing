@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NPH Detailing – Premium Fahrzeugpflege</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #C9A84C;
+    --gold-light: #E8C96A;
+    --gold-dark: #9A7A2E;
+    --black: #0A0A0A;
+    --black-soft: #111111;
+    --black-card: #161616;
+    --white: #F5F0E8;
+    --white-muted: #B0A898;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom Cursor */
+  .cursor {
+    position: fixed;
+    width: 8px; height: 8px;
+    background: var(--gold);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s ease;
+  }
+  .cursor-ring {
+    position: fixed;
+    width: 32px; height: 32px;
+    border: 1px solid var(--gold);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: all 0.15s ease;
+    opacity: 0.6;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 28px 60px;
+    background: linear-gradient(to bottom, rgba(10,10,10,0.95), transparent);
+  }
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: 4px;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+  .nav-links {
+    display: flex;
+    gap: 40px;
+    list-style: none;
+  }
+  .nav-links a {
+    color: var(--white-muted);
+    text-decoration: none;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: color 0.3s;
+  }
+  .nav-links a:hover { color: var(--gold); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    padding: 0 40px;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 60% at 50% 60%, rgba(201,168,76,0.07) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 30% at 20% 80%, rgba(201,168,76,0.04) 0%, transparent 60%);
+  }
+
+  .hero-line {
+    width: 1px;
+    height: 80px;
+    background: linear-gradient(to bottom, transparent, var(--gold));
+    margin: 0 auto 40px;
+    animation: fadeDown 1.2s ease forwards;
+    opacity: 0;
+  }
+
+  .hero-tag {
+    font-size: 10px;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 24px;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.3s forwards;
+  }
+
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(56px, 10vw, 120px);
+    font-weight: 300;
+    line-height: 0.95;
+    letter-spacing: -1px;
+    margin-bottom: 32px;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.5s forwards;
+  }
+
+  .hero-title em {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  .hero-subtitle {
+    font-size: 12px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--white-muted);
+    max-width: 400px;
+    line-height: 2;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.7s forwards;
+  }
+
+  .hero-cta {
+    margin-top: 56px;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.9s forwards;
+  }
+
+  .btn-gold {
+    display: inline-block;
+    padding: 16px 48px;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    text-decoration: none;
+    font-size: 10px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-gold::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--gold);
+    transform: translateX(-101%);
+    transition: transform 0.4s ease;
+  }
+  .btn-gold:hover { color: var(--black); }
+  .btn-gold:hover::before { transform: translateX(0); }
+  .btn-gold span { position: relative; z-index: 1; }
+
+  .hero-scroll {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    opacity: 0;
+    animation: fadeUp 1s ease 1.2s forwards;
+  }
+  .hero-scroll span {
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--white-muted);
+  }
+  .scroll-line {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, var(--gold), transparent);
+    animation: scrollAnim 2s ease infinite;
+  }
+
+  /* DIVIDER */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    padding: 0 60px;
+    margin: 80px 0;
+  }
+  .divider-line { flex: 1; height: 1px; background: rgba(201,168,76,0.2); }
+  .divider-diamond {
+    width: 8px; height: 8px;
+    background: var(--gold);
+    transform: rotate(45deg);
+  }
+
+  /* SERVICES */
+  .services {
+    padding: 80px 60px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-size: 10px;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 16px;
+  }
+
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(36px, 5vw, 64px);
+    font-weight: 300;
+    line-height: 1.1;
+    margin-bottom: 64px;
+  }
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+
+  .service-card {
+    background: var(--black-card);
+    padding: 48px 36px;
+    border: 1px solid rgba(201,168,76,0.1);
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .service-card::before {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(to right, transparent, var(--gold), transparent);
+    transform: scaleX(0);
+    transition: transform 0.4s ease;
+  }
+  .service-card:hover { border-color: rgba(201,168,76,0.3); transform: translateY(-4px); }
+  .service-card:hover::before { transform: scaleX(1); }
+
+  .service-number {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 64px;
+    font-weight: 300;
+    color: rgba(201,168,76,0.12);
+    line-height: 1;
+    margin-bottom: 24px;
+  }
+
+  .service-name {
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--white);
+    margin-bottom: 12px;
+  }
+
+  .service-desc {
+    font-size: 12px;
+    color: var(--white-muted);
+    line-height: 1.8;
+    margin-bottom: 32px;
+  }
+
+  .service-price {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 42px;
+    font-weight: 300;
+    color: var(--gold);
+  }
+  .service-price sup {
+    font-size: 18px;
+    vertical-align: top;
+    margin-top: 8px;
+    display: inline-block;
+  }
+
+  /* ABOUT */
+  .about {
+    padding: 80px 60px;
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+
+  .about-visual {
+    position: relative;
+  }
+
+  .about-box {
+    border: 1px solid rgba(201,168,76,0.2);
+    padding: 60px 48px;
+    background: var(--black-card);
+    position: relative;
+  }
+  .about-box::before {
+    content: '';
+    position: absolute;
+    top: -1px; left: 40px; right: 40px;
+    height: 2px;
+    background: linear-gradient(to right, transparent, var(--gold), transparent);
+  }
+
+  .about-stat {
+    text-align: center;
+    padding: 24px 0;
+    border-bottom: 1px solid rgba(201,168,76,0.1);
+  }
+  .about-stat:last-child { border-bottom: none; }
+
+  .stat-number {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 56px;
+    font-weight: 300;
+    color: var(--gold);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--white-muted);
+    margin-top: 8px;
+  }
+
+  .about-text p {
+    font-size: 14px;
+    color: var(--white-muted);
+    line-height: 2;
+    margin-bottom: 24px;
+  }
+
+  /* PROCESS */
+  .process {
+    padding: 80px 60px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .process-steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    margin-top: 64px;
+    position: relative;
+  }
+
+  .process-steps::before {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: 12%;
+    right: 12%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(201,168,76,0.3), rgba(201,168,76,0.3), transparent);
+  }
+
+  .process-step {
+    text-align: center;
+    padding: 0 20px;
+  }
+
+  .step-dot {
+    width: 40px; height: 40px;
+    border: 1px solid var(--gold);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 24px;
+    background: var(--black);
+    position: relative;
+    z-index: 1;
+  }
+
+  .step-dot-inner {
+    width: 8px; height: 8px;
+    background: var(--gold);
+    border-radius: 50%;
+  }
+
+  .step-title {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--white);
+    margin-bottom: 12px;
+  }
+
+  .step-desc {
+    font-size: 12px;
+    color: var(--white-muted);
+    line-height: 1.8;
+  }
+
+  /* CONTACT */
+  .contact {
+    padding: 80px 60px;
+    max-width: 700px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .contact-info {
+    margin-top: 48px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .contact-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 20px 32px;
+    border: 1px solid rgba(201,168,76,0.15);
+    transition: border-color 0.3s;
+  }
+  .contact-item:hover { border-color: rgba(201,168,76,0.4); }
+
+  .contact-label {
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    min-width: 80px;
+    text-align: right;
+  }
+
+  .contact-value {
+    font-size: 14px;
+    color: var(--white);
+    text-align: left;
+  }
+
+  .contact-divider {
+    width: 1px;
+    height: 20px;
+    background: rgba(201,168,76,0.3);
+  }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    padding: 40px 60px;
+    border-top: 1px solid rgba(201,168,76,0.1);
+    margin-top: 80px;
+  }
+
+  footer p {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--white-muted);
+  }
+
+  footer .footer-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    color: var(--gold);
+    letter-spacing: 6px;
+    margin-bottom: 16px;
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes scrollAnim {
+    0% { transform: scaleY(0); transform-origin: top; opacity: 1; }
+    50% { transform: scaleY(1); transform-origin: top; opacity: 1; }
+    51% { transform: scaleY(1); transform-origin: bottom; }
+    100% { transform: scaleY(0); transform-origin: bottom; opacity: 0; }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 20px 24px; }
+    .nav-links { display: none; }
+    .services { padding: 60px 24px; }
+    .services-grid { grid-template-columns: 1fr; }
+    .about { grid-template-columns: 1fr; padding: 60px 24px; gap: 40px; }
+    .process { padding: 60px 24px; }
+    .process-steps { grid-template-columns: 1fr 1fr; gap: 40px; }
+    .process-steps::before { display: none; }
+    .contact { padding: 60px 24px; }
+    .divider { padding: 0 24px; }
+    footer { padding: 40px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursor-ring"></div>
+
+<nav>
+  <div class="nav-logo">NPH</div>
+  <ul class="nav-links">
+    <li><a href="#services">Leistungen</a></li>
+    <li><a href="#about">Über uns</a></li>
+    <li><a href="#process">Ablauf</a></li>
+    <li><a href="#contact">Kontakt</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-line"></div>
+  <p class="hero-tag">Premium Fahrzeugpflege · Maria Enzersdorf</p>
+  <h1 class="hero-title">NPH<br><em>Detailing</em></h1>
+  <p class="hero-subtitle">Ihr Fahrzeug verdient mehr als eine gewöhnliche Wäsche. Wir kommen zu Ihnen – oder Sie zu uns.</p>
+  <div class="hero-cta">
+    <a href="#contact" class="btn-gold"><span>Termin anfragen</span></a>
+  </div>
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<div class="divider">
+  <div class="divider-line"></div>
+  <div class="divider-diamond"></div>
+  <div class="divider-line"></div>
+</div>
+
+<!-- SERVICES -->
+<section class="services" id="services">
+  <div class="reveal">
+    <p class="section-label">Unsere Leistungen</p>
+    <h2 class="section-title">Makellose Ergebnisse.<br>Faire Preise.</h2>
+  </div>
+  <div class="services-grid reveal">
+    <div class="service-card">
+      <div class="service-number">01</div>
+      <p class="service-name">Außenwäsche</p>
+      <p class="service-desc">Gründliche Reinigung der Karosserie, Felgen und Scheiben. Ihr Auto erstrahlt wieder in vollem Glanz.</p>
+      <div class="service-price"><sup>€</sup>20</div>
+    </div>
+    <div class="service-card">
+      <div class="service-number">02</div>
+      <p class="service-name">Innenreinigung</p>
+      <p class="service-desc">Staubsaugen, Armaturenbrett, Sitze, Türverkleidungen – innen so sauber wie am ersten Tag.</p>
+      <div class="service-price"><sup>€</sup>40</div>
+    </div>
+    <div class="service-card">
+      <div class="service-number">03</div>
+      <p class="service-name">Komplett-Paket</p>
+      <p class="service-desc">Innen & Außen kombiniert – das Rundum-Sorglos-Paket für ein Fahrzeug wie aus dem Showroom.</p>
+      <div class="service-price"><sup>€</sup>55</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider">
+  <div class="divider-line"></div>
+  <div class="divider-diamond"></div>
+  <div class="divider-line"></div>
+</div>
+
+<!-- ABOUT -->
+<section class="about" id="about">
+  <div class="about-visual reveal">
+    <div class="about-box">
+      <div class="about-stat">
+        <div class="stat-number">100%</div>
+        <div class="stat-label">Handarbeit</div>
+      </div>
+      <div class="about-stat" style="padding: 20px 0;">
+        <div style="display: flex; gap: 12px; justify-content: center;">
+          <div style="flex: 1; border: 1px solid rgba(201,168,76,0.25); padding: 16px 12px;">
+            <div style="font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 6px;">Option A</div>
+            <div style="font-size: 12px; color: var(--white); line-height: 1.5;">Wir kommen<br>zu Ihnen</div>
+          </div>
+          <div style="display: flex; align-items: center; color: var(--gold); font-family: serif; font-size: 20px; padding: 0 4px;">·</div>
+          <div style="flex: 1; border: 1px solid rgba(201,168,76,0.25); padding: 16px 12px;">
+            <div style="font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 6px;">Option B</div>
+            <div style="font-size: 12px; color: var(--white); line-height: 1.5;">Sie kommen<br>zu uns</div>
+          </div>
+        </div>
+      </div>
+      <div class="about-stat">
+        <div class="stat-number">∞</div>
+        <div class="stat-label">Leidenschaft</div>
+      </div>
+    </div>
+  </div>
+  <div class="about-text reveal">
+    <p class="section-label">Über uns</p>
+    <h2 class="section-title" style="font-size: clamp(28px, 4vw, 48px); margin-bottom: 32px;">Qualität,<br>die man sieht.</h2>
+    <p>NPH Detailing steht für sorgfältige, handwerkliche Fahrzeugpflege. Wir sind zwei junge Männer aus Maria Enzersdorf mit echtem Herzblut für saubere Autos.</p>
+    <p>Wir kommen direkt zu Ihnen nach Hause – oder Sie bringen uns Ihr Fahrzeug. Flexibel, zuverlässig, und mit einem Auge für Details, das man bei der großen Waschanlage nicht bekommt.</p>
+    <a href="#contact" class="btn-gold" style="margin-top: 8px;"><span>Jetzt buchen</span></a>
+  </div>
+</section>
+
+<div class="divider">
+  <div class="divider-line"></div>
+  <div class="divider-diamond"></div>
+  <div class="divider-line"></div>
+</div>
+
+<!-- PROCESS -->
+<section class="process" id="process">
+  <div class="reveal">
+    <p class="section-label">Der Ablauf</p>
+    <h2 class="section-title">So einfach<br>geht's.</h2>
+  </div>
+  <div class="process-steps reveal">
+    <div class="process-step">
+      <div class="step-dot"><div class="step-dot-inner"></div></div>
+      <p class="step-title">Kontakt</p>
+      <p class="step-desc">Schreiben Sie uns per WhatsApp oder Instagram.</p>
+    </div>
+    <div class="process-step">
+      <div class="step-dot"><div class="step-dot-inner"></div></div>
+      <p class="step-title">Termin</p>
+      <p class="step-desc">Wir vereinbaren einen passenden Zeitpunkt.</p>
+    </div>
+    <div class="process-step">
+      <div class="step-dot"><div class="step-dot-inner"></div></div>
+      <p class="step-title">Reinigung</p>
+      <p class="step-desc">Wir erledigen die Arbeit sorgfältig & pünktlich.</p>
+    </div>
+    <div class="process-step">
+      <div class="step-dot"><div class="step-dot-inner"></div></div>
+      <p class="step-title">Ergebnis</p>
+      <p class="step-desc">Ihr Fahrzeug erstrahlt wie neu. Bezahlung vor Ort.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider">
+  <div class="divider-line"></div>
+  <div class="divider-diamond"></div>
+  <div class="divider-line"></div>
+</div>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div class="reveal">
+    <p class="section-label">Kontakt</p>
+    <h2 class="section-title">Termin<br><em>anfragen</em></h2>
+    <p style="color: var(--white-muted); font-size: 13px; line-height: 2; margin-top: 16px;">Schreiben Sie uns einfach – wir melden uns innerhalb von 24 Stunden.</p>
+  </div>
+  <div class="contact-info reveal">
+    <div class="contact-item">
+      <span class="contact-label">WhatsApp</span>
+      <div class="contact-divider"></div>
+      <span class="contact-value">+43 XXX XXX XXXX</span>
+    </div>
+    <div class="contact-item">
+      <span class="contact-label">Instagram</span>
+      <div class="contact-divider"></div>
+      <span class="contact-value">@nph.detailing</span>
+    </div>
+    <div class="contact-item" style="flex-direction: column; gap: 20px; padding: 28px 32px;">
+      <span class="contact-label" style="min-width: unset; text-align: center;">Wo wir arbeiten</span>
+      <div style="display: flex; gap: 24px; width: 100%; justify-content: center;">
+        <div style="text-align: center; flex: 1; border-right: 1px solid rgba(201,168,76,0.2); padding-right: 24px;">
+          <div style="font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 8px;">Bei Ihnen</div>
+          <div style="font-size: 13px; color: var(--white); line-height: 1.7;">Wir kommen direkt<br>zu Ihnen nach Hause</div>
+        </div>
+        <div style="text-align: center; flex: 1; padding-left: 24px;">
+          <div style="font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 8px;">Bei uns</div>
+          <div style="font-size: 13px; color: var(--white); line-height: 1.7;">Sie bringen uns<br>Ihr Fahrzeug</div>
+        </div>
+      </div>
+    </div>
+    <div class="contact-item">
+      <span class="contact-label">Verfügbar</span>
+      <div class="contact-divider"></div>
+      <span class="contact-value">Wochenende & nach Vereinbarung</span>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">NPH Detailing</div>
+  <p>© 2025 NPH Detailing · Maria Enzersdorf · Alle Rechte vorbehalten</p>
+</footer>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursor-ring');
+  document.addEventListener('mousemove', e => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top = e.clientY + 'px';
+    setTimeout(() => {
+      ring.style.left = e.clientX + 'px';
+      ring.style.top = e.clientY + 'px';
+    }, 80);
+  });
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) e.target.classList.add('visible');
+    });
+  }, { threshold: 0.15 });
+  reveals.forEach(r => observer.observe(r));
+</script>
+</body>
+</html>
